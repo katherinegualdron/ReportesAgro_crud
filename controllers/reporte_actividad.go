@@ -1,4 +1,4 @@
-package config
+package controllers
 
 import (
 	"database/sql"
@@ -16,8 +16,11 @@ func ConnectDB() {
 	user := "postgres"
 	password := "transversal10"
 	dbname := "AgroCampo"
-	schema := "\"Reportes\""
+	schema := "Reportes"
 
+
+
+	
 	psqlInfo := fmt.Sprintf(
 		"host=%s port=%d user=%s password=%s dbname=%s search_path=%s sslmode=disable",
 		host, port, user, password, dbname, schema,

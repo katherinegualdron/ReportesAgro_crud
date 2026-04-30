@@ -4,5 +4,8 @@ import "github.com/gorilla/mux"
 
 func RegistrarRutas(router *mux.Router) {
 	RegistrarRutasReporteActividad(router)
-	RegistrarRutasExportacionDatos(router)
+}
+
+func RegistrarRutasReporteActividad(router *mux.Router) {
+	panic("unimplemented")
 }
