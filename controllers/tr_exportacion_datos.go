@@ -13,7 +13,7 @@ import (
 )
 
 func ObtenerExportacionesDatos(w http.ResponseWriter, r *http.Request) {
-	rows, err := config.DB.Query(`SELECT id_tr_exportacion_datos, id_usuario, id_reporte, formato, url_archivo, estado, fecha_creacion FROM "tr_ExportacionDatos" ORDER BY id_tr_exportacion_datos`)
+	rows, err := config.DB.Query(`SELECT id_tr_exportacion_datos, id_usuario, id_reporte, formato, url_archivo, estado, fecha_creacion FROM "Reportes"."tr_ExportacionDatos" ORDER BY id_tr_exportacion_datos`)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "error al consultar tr_exportacion_datos")
 		return
@@ -37,7 +37,7 @@ func ObtenerExportacionDatosPorID(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, "id invalido")
 		return
 	}
-	row := config.DB.QueryRow(`SELECT id_tr_exportacion_datos, id_usuario, id_reporte, formato, url_archivo, estado, fecha_creacion FROM "tr_ExportacionDatos" WHERE id_tr_exportacion_datos = $1`, id)
+	row := config.DB.QueryRow(`SELECT id_tr_exportacion_datos, id_usuario, id_reporte, formato, url_archivo, estado, fecha_creacion FROM "Reportes"."tr_ExportacionDatos" WHERE id_tr_exportacion_datos = $1`, id)
 	item, err := scanExportacionDatos(row.Scan)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -60,7 +60,7 @@ func CrearExportacionDatos(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	row := config.DB.QueryRow(`INSERT INTO "tr_ExportacionDatos" (id_usuario, id_reporte, formato, url_archivo, estado, fecha_creacion) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id_tr_exportacion_datos, id_usuario, id_reporte, formato, url_archivo, estado, fecha_creacion`,
+	row := config.DB.QueryRow(`INSERT INTO "Reportes"."tr_ExportacionDatos" (id_usuario, id_reporte, formato, url_archivo, estado, fecha_creacion) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id_tr_exportacion_datos, id_usuario, id_reporte, formato, url_archivo, estado, fecha_creacion`,
 		item.IdUsuario, item.IdReporte, item.Formato, item.UrlArchivo, item.Estado, item.FechaCreacion)
 	item, err := scanExportacionDatos(row.Scan)
 	if err != nil {
@@ -89,7 +89,7 @@ func ActualizarExportacionDatos(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	row := config.DB.QueryRow(`UPDATE "tr_ExportacionDatos" SET id_usuario = $1, id_reporte = $2, formato = $3, url_archivo = $4, estado = $5, fecha_creacion = $6 WHERE id_tr_exportacion_datos = $7 RETURNING id_tr_exportacion_datos, id_usuario, id_reporte, formato, url_archivo, estado, fecha_creacion`,
+	row := config.DB.QueryRow(`UPDATE "Reportes"."tr_ExportacionDatos" SET id_usuario = $1, id_reporte = $2, formato = $3, url_archivo = $4, estado = $5, fecha_creacion = $6 WHERE id_tr_exportacion_datos = $7 RETURNING id_tr_exportacion_datos, id_usuario, id_reporte, formato, url_archivo, estado, fecha_creacion`,
 		item.IdUsuario, item.IdReporte, item.Formato, item.UrlArchivo, item.Estado, item.FechaCreacion, id)
 	item, err = scanExportacionDatos(row.Scan)
 	if err != nil {
@@ -108,7 +108,7 @@ func ActualizarExportacionDatos(w http.ResponseWriter, r *http.Request) {
 }
 
 func EliminarExportacionDatos(w http.ResponseWriter, r *http.Request) {
-	eliminarGenericoReportes(w, r, `"tr_ExportacionDatos"`, "id_tr_exportacion_datos", "tr_exportacion_datos")
+	eliminarGenericoReportes(w, r, `"Reportes"."tr_ExportacionDatos"`, "id_tr_exportacion_datos", "tr_exportacion_datos")
 }
 
 func scanExportacionDatos(scan func(dest ...any) error) (models.TrExportacionDatos, error) {
@@ -128,7 +128,7 @@ func validarExportacionDatos(idUsuario int, idReporte int) error {
 	} else if !ok {
 		return errors.New("id_usuario no existe")
 	}
-	if ok, err := existeRegistro(`"ReporteActividad"`, "id_reporte_actividad", idReporte); err != nil {
+	if ok, err := existeRegistro(`"Reportes"."ReporteActividad"`, "id_reporte_actividad", idReporte); err != nil {
 		return errors.New("error al validar id_reporte")
 	} else if !ok {
 		return errors.New("id_reporte no existe")
