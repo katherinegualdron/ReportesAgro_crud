@@ -16,6 +16,6 @@ func main() {
 	router := mux.NewRouter()
 	routes.RegistrarRutas(router)
 
-	log.Println("Servidor REPORTES escuchando en :8095")
-	log.Fatal(http.ListenAndServe(":8095", router))
+	log.Println("Servidor REPORTES escuchando en :8094")
+	log.Fatal(http.ListenAndServe(":8094", router))
 }
